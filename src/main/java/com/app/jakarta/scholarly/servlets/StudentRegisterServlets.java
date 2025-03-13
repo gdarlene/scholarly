@@ -28,7 +28,7 @@ public class StudentRegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         // Display the registration form
-        request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+        request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
     }
 
     @Override
@@ -46,35 +46,35 @@ public class StudentRegisterServlet extends HttpServlet {
         // Validate input
         if (areFieldsMissing(userName, email, password, confirmPassword, phoneNumber, gender, classRoom)) {
             request.setAttribute("error", "All fields are required.");
-            request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
             return;
         }
 
         // Validate email format
         if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             request.setAttribute("error", "Invalid email format.");
-            request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
             return;
         }
 
         // Check if passwords match
         if (!password.equals(confirmPassword)) {
             request.setAttribute("error", "Passwords do not match.");
-            request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
             return;
         }
 
         // Validate password length (6-20 characters as per @Size constraint)
         if (password.length() < 6 || password.length() > 20) {
             request.setAttribute("error", "Password must be between 6 and 20 characters.");
-            request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
             return;
         }
 
         // Validate phone number length (max 12 characters as per @Size constraint)
         if (phoneNumber.length() > 12) {
             request.setAttribute("error", "Phone number must not exceed 12 characters.");
-            request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
             return;
         }
 
@@ -88,7 +88,7 @@ public class StudentRegisterServlet extends HttpServlet {
             // Check if email already exists
             if (studentDAO.findByEmail(email) != null) {
                 request.setAttribute("error", "Email already exists.");
-                request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+                request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
                 return;
             }
 
@@ -96,10 +96,10 @@ public class StudentRegisterServlet extends HttpServlet {
             studentDAO.saveStudent(student);
 
             // Redirect to a confirmation page or login page
-            response.sendRedirect("student-login.jsp");
+            response.sendRedirect("loginstudent.jsp");
         } catch (Exception e) {
             request.setAttribute("error", "An error occurred during registration: " + e.getMessage());
-            request.getRequestDispatcher("/student-signup.jsp").forward(request, response);
+            request.getRequestDispatcher("/registerstudent.jsp").forward(request, response);
         }
     }
 
