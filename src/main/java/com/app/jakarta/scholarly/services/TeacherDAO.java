@@ -1,31 +1,42 @@
 package com.app.jakarta.scholarly.services;
 
-import com.app.jakarta.scholarly.models.Teacher;
+import com.app.jakarta.scholarly.models.Classroom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
 
-public class TeacherDAO {
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("scholarlyPU");
+import java.util.List;
 
-    public static void saveTeacher(Teacher instructor) {
+public class ClassroomDAO {
+    private EntityManagerFactory emf;
+
+    public ClassroomDAO(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+
+    public void saveClassroom(Classroom classroom) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(instructor);
+            em.persist(classroom);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
     }
 
-    public Teacher getTeacherByEmail(String email) {
+    public Classroom findById(Long id) {
         EntityManager em = emf.createEntityManager();
         try {
-            TypedQuery<Teacher> query = em.createQuery("SELECT t FROM Teacher t WHERE t.email = :email", Teacher.class);
-            query.setParameter("email", email);
-            return query.getResultStream().findFirst().orElse(null);
+            return em.find(Classroom.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Classroom> getAllClassrooms() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT c FROM Classroom c", Classroom.class).getResultList();
         } finally {
             em.close();
         }
